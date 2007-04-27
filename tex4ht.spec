@@ -1,70 +1,111 @@
-%define name	tex4ht
-%define version 1.0.2005_07_17_1932
-%define release %mkrel 2
+%bcond_with java
+%define gcj_support 1
 
-Name:		%{name}
-Version:	%{version}
-Release:	%{release}
-Summary:	Translates tex (and latex) into html+gifs or xml+mathml+gifs
-URL:		http://www.cse.ohio-state.edu/~gurari/
-License:	Latex Project Public License
-Group:		Publishing
-Source:		http://www.cse.ohio-state.edu/~gurari/TeX4ht/fix/%{name}-%{version}.tar.bz2
-Patch:		%{name}-1.0.2005_05_11_0314.path.patch.bz2
-Requires:	tetex
-BuildRoot:	%{_tmppath}/%{name}-%{version}
+Name:           tex4ht
+Version:        1.0.2007_04_26_0132
+Release:        %mkrel 1
+Epoch:          1
+Summary:        LaTeX and TeX for Hypertext
+License:        Distributable
+Group:          Publishing
+URL:            http://www.cse.ohio-state.edu/~gurari/TeX4ht/
+Source0:        http://www.cse.ohio-state.edu/~gurari/TeX4ht/fix/tex4ht-%{version}.tar.gz
+Patch0:         %{name}-1.0.2005_05_11_0314.path.patch
+Requires(post): tetex
+%if %with java
+%if %{gcj_support}
+Requires(post): java-gcj-compat
+Requires(postun): java-gcj-compat
+BuildRequires:  java-gcj-compat-devel
+%else
+BuildRequires:  java-devel >= 0:1.4.2
+%endif
+BuildRequires:  jpackage-utils
+%endif
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 
 %description 
-A translator/compiler which translates tex and latex into html+gifs or
-xml+mathml+gifs.
+TeX4ht is a highly configurable TeX-based authoring system for
+producing hypertext. It interacts with TeX-based applications
+through style files and postprocessors, leaving the processing of
+the source files to the native TeX compiler. Consequently, TeX4ht
+can handle  the features of TeX-based systems in general, and of
+the LaTeX and AMS style files in particular.
 
 %prep
 %setup -q
-%patch
+%patch0 -p0
 for file in bin/unix/*; do
-	if ! grep '^#!' $file; then
-		mv $file $file.tmp
-		echo "#!/bin/sh" > $file
-		cat $file.tmp >>  $file
-		rm -f $file.tmp
-	fi
+    if ! %{__grep} '^#!' $file; then
+      %{__mv} $file $file.tmp
+      /bin/echo "#!/bin/sh" > $file
+      %{__cat} $file.tmp >>  $file
+      %{__rm} -f $file.tmp
+    fi
 done
+%{_bindir}/find . -name '*.class' -o -name '*.jar' | %{_bindir}/xargs -t %{__rm}
 
 %build
 cd src
-gcc -o tex4ht tex4ht.c \
-	$RPM_OPT_FLAGS \
-	-DENVFILE='"%{_datadir}/texmf/tex4ht/base/unix/tex4ht.env"' \
-	-DHAVE_DIRENT_H
-gcc -o t4ht t4ht.c \
-	$RPM_OPT_FLAGS \
-	-DENVFILE='"%{_datadir}/texmf/tex4ht/base/unix/tex4ht.env"' \
-	-DHAVE_DIRENT_H
+%{__cc} -o tex4ht tex4ht.c \
+        %{optflags} \
+        -DENVFILE='"%{_datadir}/texmf/tex4ht/base/unix/tex4ht.env"' \
+        -DHAVE_DIRENT_H
+%{__cc} -o t4ht t4ht.c \
+        %{optflags} \
+        -DENVFILE='"%{_datadir}/texmf/tex4ht/base/unix/tex4ht.env"' \
+        -DHAVE_DIRENT_H
+%if %with java
+# FIXME: this requires Java 1.5 support
+%{javac} `%{_bindir}/find . -name '*.java'`
+%endif
 
 %install
-rm -rf %{buildroot}
-install -d -m 755 %{buildroot}%{_bindir}
-install -m 755 src/t4ht src/tex4ht %{buildroot}%{_bindir}
-install -m 755 bin/unix/* %{buildroot}%{_bindir}
+%{__rm} -rf %{buildroot}
 
-install -d -m 755 %{buildroot}%{_datadir}/texmf/tex/generic
-cp -a texmf/tex/generic/tex4ht %{buildroot}%{_datadir}/texmf/tex/generic
+%{__mkdir_p} %{buildroot}%{_bindir}
+%{__cp} -a src/t4ht src/tex4ht %{buildroot}%{_bindir}
+%{__cp} -a bin/unix/* %{buildroot}%{_bindir}
+%{__perl} -pi -e 's|~/tex4ht.dir|%{_datadir}|g' %{buildroot}%{_bindir}/*
 
-install -d -m 755 %{buildroot}%{_datadir}/texmf/tex4ht
-cp -a texmf/tex4ht/ht-fonts %{buildroot}%{_datadir}/texmf/tex4ht
+%{__mkdir_p} %{buildroot}%{_datadir}/texmf/tex/generic
+%{__cp} -a texmf/tex/generic/tex4ht %{buildroot}%{_datadir}/texmf/tex/generic
 
-install -d -m 755 %{buildroot}%{_datadir}/texmf/tex4ht/base/unix
-install -m 644 texmf/tex4ht/base/unix/tex4ht.env %{buildroot}%{_datadir}/texmf/tex4ht/base/unix
+%{__mkdir_p} %{buildroot}%{_datadir}/texmf/tex4ht
+%{__cp} -a texmf/tex4ht/ht-fonts %{buildroot}%{_datadir}/texmf/tex4ht
 
-find %{buildroot}%{_datadir}/texmf/ -type f -exec chmod 644 {} \;
+%{__mkdir_p} %{buildroot}%{_datadir}/texmf/tex4ht/base/unix
+%{__cp} -a texmf/tex4ht/base/unix/tex4ht.env %{buildroot}%{_datadir}/texmf/tex4ht/base/unix
+
+%if %with java
+%if %{gcj_support}
+%{_bindir}/aot-compile-rpm
+%endif
+%endif
 
 %clean
-rm -rf %{buildroot}
+%{__rm} -rf %{buildroot}
+
+%post
+if [ -x %{_bindir}/texhash ]; then
+    %{_bindir}/texhash 2>/dev/null || :
+fi
+%if %with java
+%{update_gcjdb}
+
+%postun
+%{clean_gcjdb}
+%endif
 
 %files
-%defattr(-,root,root)
+%defattr(0644,root,root,0755)
+%attr(0755,root,root) %{_bindir}/*
 %{_datadir}/texmf/tex/generic/%{name}
 %{_datadir}/texmf/%{name}
-%{_bindir}/*
-
-%post -p /usr/bin/texhash
+%if %with java
+%{_javadir}/*
+%if %{gcj_support}
+%dir %{_libdir}/gcj/%{name}
+%attr(-,root,root) %{_libdir}/gcj/%{name}/*.jar.*
+%endif
+%endif
