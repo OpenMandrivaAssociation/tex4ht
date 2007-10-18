@@ -3,7 +3,7 @@
 
 Name:           tex4ht
 Version:        1.0.2007_10_17_1737
-Release:        %mkrel 1
+Release:        %mkrel 2
 Epoch:          1
 Summary:        LaTeX and TeX for Hypertext
 License:        Distributable
@@ -11,7 +11,7 @@ Group:          Publishing
 URL:            http://www.cse.ohio-state.edu/~gurari/TeX4ht/
 Source0:        http://www.cse.ohio-state.edu/~gurari/TeX4ht/fix/tex4ht-%{version}.tar.gz
 Patch0:         %{name}-1.0.2005_05_11_0314.path.patch
-Requires(post): tetex
+Requires(post): tetex-latex
 %if %with java
 %if %{gcj_support}
 BuildRequires:  java-gcj-compat-devel
