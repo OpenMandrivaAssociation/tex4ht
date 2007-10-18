@@ -1,8 +1,8 @@
-%bcond_with java
+%bcond_without java
 %define gcj_support 1
 
 Name:           tex4ht
-Version:        1.0.2007_04_26_0132
+Version:        1.0.2007_10_17_1737
 Release:        %mkrel 1
 Epoch:          1
 Summary:        LaTeX and TeX for Hypertext
@@ -14,11 +14,9 @@ Patch0:         %{name}-1.0.2005_05_11_0314.path.patch
 Requires(post): tetex
 %if %with java
 %if %{gcj_support}
-Requires(post): java-gcj-compat
-Requires(postun): java-gcj-compat
 BuildRequires:  java-gcj-compat-devel
 %else
-BuildRequires:  java-devel >= 0:1.4.2
+BuildRequires:  java-devel >= 0:1.5.0
 %endif
 BuildRequires:  jpackage-utils
 %endif
@@ -56,8 +54,8 @@ cd src
         -DENVFILE='"%{_datadir}/texmf/tex4ht/base/unix/tex4ht.env"' \
         -DHAVE_DIRENT_H
 %if %with java
-# FIXME: this requires Java 1.5 support
-%{javac} `%{_bindir}/find . -name '*.java'`
+cd java
+%{javac} -nowarn -source 1.5 -target 1.5 `%{_bindir}/find . -type f -name '*.java'`
 %endif
 
 %install
@@ -78,6 +76,10 @@ cd src
 %{__cp} -a texmf/tex4ht/base/unix/tex4ht.env %{buildroot}%{_datadir}/texmf/tex4ht/base/unix
 
 %if %with java
+%{__mkdir_p} %{buildroot}%{_javadir}
+(cd src/java && %{jar} cf %{buildroot}%{_javadir}/%{name}-%{version}.jar `%{_bindir}/find . -type f -name '*.class'`)
+%{__ln_s} %{name}-%{version}.jar %{buildroot}%{_javadir}/%{name}.jar
+
 %if %{gcj_support}
 %{_bindir}/aot-compile-rpm
 %endif
