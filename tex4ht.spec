@@ -3,7 +3,7 @@
 
 Name:           tex4ht
 Version:        1.0.2007_10_17_1737
-Release:        %mkrel 2
+Release:        %mkrel 3
 Epoch:          1
 Summary:        LaTeX and TeX for Hypertext
 License:        Distributable
@@ -18,7 +18,7 @@ BuildRequires:  java-gcj-compat-devel
 %else
 BuildRequires:  java-devel >= 0:1.5.0
 %endif
-BuildRequires:  jpackage-utils
+BuildRequires:  java-rpmbuild
 %endif
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 
