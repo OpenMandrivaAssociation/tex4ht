@@ -20,6 +20,7 @@ BuildRequires:  java-devel >= 0:1.5.0
 %endif
 BuildRequires:  java-rpmbuild
 %endif
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 
 %description 
 TeX4ht is a highly configurable TeX-based authoring system for
