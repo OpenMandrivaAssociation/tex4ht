@@ -36,6 +36,8 @@ Requires:       imagemagick
 Requires:       pstoedit
 Requires:       tetex-dvips
 BuildRequires:  sharutils
+BuildRequires:	tetex-devel
+#BuildRequires:	kpathsea-devel
 %if %with java
 %if %{gcj_support}
 BuildRequires:  java-gcj-compat-devel
