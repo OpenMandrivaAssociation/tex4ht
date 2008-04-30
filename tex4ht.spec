@@ -5,39 +5,43 @@
 %define gcj_support 1
 
 Name:           tex4ht
-Version:        1.0.2007_12_19_2154
+Version:        1.0.2008_02_28_2058
 Release:        %mkrel 1
 Epoch:          1
 Summary:        LaTeX and TeX for Hypertext
-License:        Distributable
+License:        LPPL
 Group:          Publishing
 URL:            http://www.cse.ohio-state.edu/~gurari/TeX4ht/
 Source0:        http://www.cse.ohio-state.edu/~gurari/TeX4ht/fix/tex4ht-%{version}.tar.gz
+# Source1 is only used for documentation
+# renamed to tex4ht-all-YYYYMMDD.zip - based on last timestamp in directory
 Source1:        tex4ht-all-20070609.zip
 # unversioned upstream source, downloaded with wget -N
 #Source1 http://www.cse.ohio-state.edu/~gurari/TeX4ht/tex4ht-all.zip
 Source2:        tex4ht-lppl.txt
 # unversioned upstream litteral source, downloaded with wget -N
 #Source3:       http://www.cse.ohio-state.edu/~gurari/TeX4ht/fix/tex4ht-lit.zip
-Source3:        tex4ht-lit-20071220.zip
+Source3:        tex4ht-lit-20080229.zip
 Source4:        http://www.cse.ohio-state.edu/~gurari/tpf/ProTex.sty
 Source5:        http://www.cse.ohio-state.edu/~gurari/tpf/AlProTex.sty
 Source6:        http://www.cse.ohio-state.edu/~gurari/tpf/DraTex.sty
 Source7:        http://www.cse.ohio-state.edu/~gurari/tpf/AlDraTex.sty
-Patch0:         %{name}-1.0.2005_05_11_0314.path.patch
 # debian
-Patch1:         http://ftp.de.debian.org/debian/pool/main/t/tex4ht/tex4ht_20071211-2.diff.gz
+Patch1:         http://ftp.de.debian.org/debian/pool/main/t/tex4ht/tex4ht_20080228-1.diff.gz
+# debian patch rebased
+#Patch2:        fix_tex4ht_env.diff
 # update debian rebuild script
 #Patch3:        tetex-tex4ht-1.0-rebuild.patch
-Requires(post): tetex-latex
+Requires(post): tetex
+Requires(postun): tetex
 Requires:       netpbm
 # ImageMagick, pstoedit depends on ghostscript and gs is in ghostscript
 Requires:       imagemagick
 Requires:       pstoedit
 Requires:       tetex-dvips
 BuildRequires:  sharutils
-BuildRequires:	tetex-devel
-#BuildRequires:	kpathsea-devel
+BuildRequires:  tetex-devel
+#BuildRequires: kpathsea-devel
 %if %with java
 %if %{gcj_support}
 BuildRequires:  java-gcj-compat-devel
@@ -58,7 +62,6 @@ the LaTeX and AMS style files in particular.
 
 %prep
 %setup -q
-%patch0 -p0
 for file in bin/unix/*; do
     if ! %{__grep} '^#!' $file; then
       %{__mv} $file $file.tmp
@@ -71,6 +74,8 @@ done
 
 # debian patch
 %patch1 -p1
+# hardcoded /usr/share
+#%patch2 -p1
 
 chmod a-x src/*.c
 cp -p %{SOURCE2} lppl.txt
@@ -129,6 +134,7 @@ cd ..
   -e "s;^i.*/ht-fonts/;i%{_texmf}/tex4ht/ht-fonts/;" \
   -e "s;^tpath/tex/;t%{_texmf}/;" \
   -e "s;%%%%~/texmf-dist/;%{_texmf}/;" \
+  -e 's;^\(\.[^ ]\+\) java;\1 %{_jvmdir}/jre/bin/java;' \
  texmf/tex4ht/base/unix/tex4ht.env > tex4ht.env
 
 %if %with java
@@ -194,10 +200,17 @@ sed -e 's;@SCRIPTSDIR@;%{_scriptsdir};' \
 if [ -x %{_bindir}/texhash ]; then
     %{_bindir}/texhash 2>/dev/null || :
 fi
+
 %if %with java
 %{update_gcjdb}
+%endif
 
 %postun
+if [ -x %{_bindir}/texhash ]; then
+    %{_bindir}/texhash 2>/dev/null || :
+fi
+
+%if %with java
 %{clean_gcjdb}
 %endif
 
