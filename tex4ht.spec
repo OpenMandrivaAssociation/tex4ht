@@ -6,7 +6,7 @@
 
 Name:           tex4ht
 Version:        1.0.2008_02_28_2058
-Release:        %mkrel 3
+Release:        %mkrel 4
 Epoch:          1
 Summary:        LaTeX and TeX for Hypertext
 License:        LPPL
@@ -26,6 +26,7 @@ Source4:        http://www.cse.ohio-state.edu/~gurari/tpf/ProTex.sty
 Source5:        http://www.cse.ohio-state.edu/~gurari/tpf/AlProTex.sty
 Source6:        http://www.cse.ohio-state.edu/~gurari/tpf/DraTex.sty
 Source7:        http://www.cse.ohio-state.edu/~gurari/tpf/AlDraTex.sty
+Patch0:         tex4ht-1.0.2008_02_28_2058-fix-format-errors.patch
 # debian
 Patch1:         http://ftp.de.debian.org/debian/pool/main/t/tex4ht/tex4ht_20080228-1.diff.gz
 # debian patch rebased
@@ -72,6 +73,7 @@ for file in bin/unix/*; do
 done
 %{_bindir}/find . -name '*.class' -o -name '*.jar' | %{_bindir}/xargs -t %{__rm}
 
+%patch0 -p 1
 # debian patch
 %patch1 -p1
 # hardcoded /usr/share
