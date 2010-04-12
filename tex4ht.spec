@@ -2,7 +2,6 @@
 %define _scriptsdir %{_datadir}/tex4ht
 
 %bcond_without java
-%define gcj_support 1
 
 Name:           tex4ht
 Version:        1.0.2008_02_28_2058
@@ -44,14 +43,9 @@ BuildRequires:  sharutils
 BuildRequires:  tetex-devel
 #BuildRequires: kpathsea-devel
 %if %with java
-%if %{gcj_support}
-BuildRequires:  java-gcj-compat-devel
-%else
 BuildRequires:  java-devel >= 0:1.5.0
 %endif
-BuildRequires:  java-rpmbuild
-%endif
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
+BuildRoot:      %{_tmppath}/%{name}-%{version}
 
 %description 
 TeX4ht is a highly configurable TeX-based authoring system for
@@ -141,8 +135,9 @@ cd ..
 
 %if %with java
 cd src/java
-%{javac} -nowarn -source 1.5 -target 1.5 `%{_bindir}/find . -type f -name '*.java'`
-%{jar} cfm tex4ht.jar manifest `%{_bindir}/find . -type f -name '*.class'`
+mkdir classes
+javac -d classes -source 1.5 *.java */*.java */*/*.java
+jar cfm tex4ht.jar manifest -C classes .
 cd ..
 %endif
 
@@ -190,9 +185,6 @@ sed -e 's;@SCRIPTSDIR@;%{_scriptsdir};' \
 %{__ln_s} %{_javadir}/%{name}.jar $RPM_BUILD_ROOT%{_scriptsdir}
 %{__ln_s} %{name}-%{version}.jar %{buildroot}%{_javadir}/%{name}.jar
 
-%if %{gcj_support}
-%{_bindir}/aot-compile-rpm
-%endif
 %endif
 
 %clean
@@ -226,8 +218,4 @@ fi
 %{_scriptsdir}/
 %if %with java
 %{_javadir}/*
-%if %{gcj_support}
-%dir %{_libdir}/gcj/%{name}
-%attr(-,root,root) %{_libdir}/gcj/%{name}/*.jar.*
-%endif
 %endif
