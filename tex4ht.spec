@@ -5,7 +5,7 @@
 
 Name:           tex4ht
 Version:        1.0.2008_02_28_2058
-Release:        %mkrel 4
+Release:        %mkrel 5
 Epoch:          1
 Summary:        LaTeX and TeX for Hypertext
 License:        LPPL
