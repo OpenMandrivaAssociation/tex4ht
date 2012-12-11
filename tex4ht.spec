@@ -219,3 +219,70 @@ fi
 %if %with java
 %{_javadir}/*
 %endif
+
+
+%changelog
+* Wed Dec 08 2010 Oden Eriksson <oeriksson@mandriva.com> 1:1.0.2008_02_28_2058-5mdv2011.0
++ Revision: 615170
+- the mass rebuild of 2010.1 packages
+
+* Tue Apr 13 2010 Guillaume Rousse <guillomovitch@mandriva.org> 1:1.0.2008_02_28_2058-4mdv2010.1
++ Revision: 533741
+- drop useless gcj support
+- fix jar file creation (fix #58715)
+- fix build
+
+  + Thierry Vignaud <tv@mandriva.org>
+    - rebuild
+
+* Fri Aug 08 2008 Thierry Vignaud <tv@mandriva.org> 1:1.0.2008_02_28_2058-2mdv2009.0
++ Revision: 269422
+- rebuild early 2009.0 package (before pixel changes)
+
+* Wed Apr 30 2008 David Walluck <walluck@mandriva.org> 1:1.0.2008_02_28_2058-1mdv2009.0
++ Revision: 199694
+- sync sources
+- 1.0.2008_02_28_2058
+- BuildRequires: tetex-devel (for kpathsea-devel)
+- 2007_12_19_2154
+- fix location of dblatex
+
+  + Olivier Blin <oblin@mandriva.com>
+    - restore BuildRoot
+
+  + Thierry Vignaud <tv@mandriva.org>
+    - kill re-definition of %%buildroot on Pixel's request
+
+* Sun Dec 16 2007 Anssi Hannula <anssi@mandriva.org> 1:1.0.2007_10_17_1737-3mdv2008.1
++ Revision: 121032
+- buildrequire java-rpmbuild, i.e. build with icedtea on x86(_64)
+
+* Thu Oct 18 2007 David Walluck <walluck@mandriva.org> 1:1.0.2007_10_17_1737-2mdv2008.1
++ Revision: 99886
+- require tetex-latex instead of tetex
+
+* Thu Oct 18 2007 David Walluck <walluck@mandriva.org> 1:1.0.2007_10_17_1737-1mdv2008.1
++ Revision: 99885
+- 1.0.2007_10_17_1737
+- fix and enable java code
+
+* Fri Apr 27 2007 David Walluck <walluck@mandriva.org> 1:1.0.2007_04_26_0132-1mdv2008.0
++ Revision: 18819
+- 1.0.2007_04_26_0132
+- Import tex4ht
+
+
+
+* Tue Aug 01 2006 Guillaume Rousse <guillomovitch@mandriva.org> 1.0.2005_07_17_1932-2mdv2007.0
+- %%mkrel
+
+* Fri Jul 22 2005 Guillaume Rousse <guillomovitch@mandriva.org> 1.0.2005_07_17_1932-1mdk 
+- new version
+- fix script shellbangs
+
+* Wed May 11 2005 Guillaume Rousse <guillomovitch@mandriva.org> 1.0.2005_05_11_0314-2mdk 
+- fix font handling
+- use a patch instead of perl substitution
+
+* Wed May 11 2005 Guillaume Rousse <guillomovitch@mandriva.org> 1.0.2005_05_11_0314-1mdk 
+- initial mandriva release
