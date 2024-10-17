@@ -10,7 +10,7 @@ Epoch:          1
 Summary:        LaTeX and TeX for Hypertext
 License:        LPPL
 Group:          Publishing
-URL:            http://www.cse.ohio-state.edu/~gurari/TeX4ht/
+URL:            https://www.cse.ohio-state.edu/~gurari/TeX4ht/
 Source0:        http://www.cse.ohio-state.edu/~gurari/TeX4ht/fix/tex4ht-%{version}.tar.gz
 # Source1 is only used for documentation
 # renamed to tex4ht-all-YYYYMMDD.zip - based on last timestamp in directory
